@@ -9,6 +9,7 @@ from .entities import (
     Interview,
     InterviewId,
     ScreeningStepResult,
+    Recruiter,
     RecruiterId,
 )
 from .models import ScreeningRDB, InterviewRDB, RecruiterRDB
@@ -16,7 +17,38 @@ from .models import ScreeningRDB, InterviewRDB, RecruiterRDB
 
 class ScreeningRepository:
     def get(self, screening_id: ScreeningId) -> Screening:
-        ...
+        screening_rdb: ScreeningRDB = ScreeningRDB.objects.get(
+            id=screening_id.get_value()
+        )
+        interview_rdb: InterviewRDB
+
+        interviews: List[Interview] = [
+            Interview.reconstruct(
+                interview_id=InterviewId.reconstruct(interview_rdb.id),
+                screening_id=ScreeningId.reconstruct(screening_rdb.id),
+                interview_date=interview_rdb.interview_date,
+                interview_number=interview_rdb.interview_number,
+                screening_step_result=ScreeningStepResult(
+                    interview_rdb.screening_step_result
+                ),
+                recruiter_id=RecruiterId.reconstruct(interview_rdb.recruiter.id),
+            )
+            for interview_rdb in screening_rdb.interviewrdb_set.all()
+        ]
+
+        interviews_obj: Interviews = Interviews.reconstruct(
+            interviews=interviews,
+            screening_id=ScreeningId.reconstruct(screening_rdb.id),
+        )
+
+        screening: Screening = Screening.reconstruct(
+            screening_id=ScreeningId.reconstruct(screening_rdb.id),
+            apply_date=screening_rdb.apply_date,
+            status=ScreeningStatus(screening_rdb.status),
+            applicant_email_address=screening_rdb.applicant_email_address,
+            interviews=interviews_obj,
+        )
+        return screening
 
     def get_all(self) -> List[Screening]:
         screening_rdb_qeury: QuerySet[ScreeningRDB] = ScreeningRDB.objects.all()
@@ -66,7 +98,7 @@ class ScreeningRepository:
         screening_rdb = result[0]
 
         for interview in screening.interviews.interviews:
-            recrouter_rdb: RecruiterRDB = RecruiterRDB.objects.get(
+            recruiter_rdb: RecruiterRDB = RecruiterRDB.objects.get(
                 id=interview.recruiter_id
             )
 
@@ -77,6 +109,27 @@ class ScreeningRepository:
                     interview_date=interview.interview_date,
                     interview_number=interview.interview_number,
                     screening_step_result=interview.screening_step_result.value,
-                    recruiter=recrouter_rdb,
+                    recruiter=recruiter_rdb,
                 ),
             )
+
+
+class RecruiterRepository:
+    def get(self, recruiter_id: RecruiterId) -> Recruiter:
+        ...
+
+    def get_all(self) -> List[Recruiter]:
+        recruiter_query: QuerySet[RecruiterRDB] = RecruiterRDB.objects.all()
+        recruiter_rdb: RecruiterRDB
+
+        recruiters: List[Recruiter] = [
+            Recruiter.reconstruct(
+                recruiter_id=RecruiterId.reconstruct(recruiter_rdb.id),
+                name=recruiter_rdb.name,
+            )
+            for recruiter_rdb in recruiter_query
+        ]
+        return recruiters
+
+    def save(self, recruiter: Recruiter) -> None:
+        ...

@@ -1,7 +1,7 @@
 from typing import List
 from typing_extensions import Protocol
 
-from .entities import Screening, ScreeningId
+from .entities import Screening, ScreeningId, Recruiter, RecruiterId
 
 
 class ScreeningRepositoryInterface(Protocol):
@@ -12,4 +12,15 @@ class ScreeningRepositoryInterface(Protocol):
         ...
 
     def save(self, screening: Screening) -> None:
+        ...
+
+
+class RecruiterRepositoryInterface(Protocol):
+    def get(self, recruiter_id: RecruiterId) -> Recruiter:
+        ...
+
+    def get_all(self) -> List[Recruiter]:
+        ...
+
+    def save(self, recruiter: Recruiter) -> None:
         ...

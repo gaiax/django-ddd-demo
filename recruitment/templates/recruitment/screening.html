@@ -1,13 +1,12 @@
 
 <h1>screenings.html</h1>
-{% for screening in screenings %}
 <h2>応募者: {{ screening.applicant_email_address }}</h2>
 <p>応募日: {{ screening.apply_date }}</p>
 <p>ステータス: {{ screening.status }}</p>
 <p>次回面談/面接日: {{ screening.interviews.get_latest_interview.interview_date }}</p>
 <p>前回の面談/面接結果: {{ screening.interviews.get_latest_interview.screening_step_result }}</p>
-<a href="{% url 'recruitment:show_screening' screening.screening_id.get_value %}">詳細</a>
-{% endfor %}
+
+<a href="{% url 'recruitment:add_next_interview_screening' screening.screening_id.get_value %}">次の面談/面接の設定</a>
 
 <a href="{% url 'recruitment:apply_screening' %}">採用選考の追加（面接から）</a>
 <a href="{% url 'recruitment:start_from_pre_interview_screening' %}">採用選考の追加（面談から）</a>

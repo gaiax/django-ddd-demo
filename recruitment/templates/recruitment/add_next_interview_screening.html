@@ -1,0 +1,23 @@
+<h1>add_next_interview_screening.html</h1>
+<h2>応募者: {{ screening.applicant_email_address }}</h2>
+<p>応募日: {{ screening.apply_date }}</p>
+<p>ステータス: {{ screening.status }}</p>
+<p>次回面談/面接日: {{ screening.interviews.get_latest_interview.interview_date }}</p>
+<p>前回の面談/面接結果: {{ screening.interviews.get_latest_interview.screening_step_result }}</p>
+
+<form action="" method="post">
+  {% csrf_token %}
+  <div>
+    <label for="interview_date">次回面談/面接日</label>
+    <input type="date" id="interview_date" name="interview_date">
+  </div>
+  <div>
+    <label for="recruiter_id">採用担当者</label>
+    <select name="recruiter_id" size="12">
+    {% for recruiter in recruiters %}
+        <option value="{{ recruiter.recruiter_id.get_value }}">{{ recruiter.name }}</option>
+    {% endfor %}
+    </select>
+  </div>
+  <button type="submit">送信</button>
+</form>

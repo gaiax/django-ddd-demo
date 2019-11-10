@@ -131,6 +131,7 @@ class Screening:
         screening.apply_date = date.today()
         screening.applicant_email_address = applicant_email_address
         screening.status = ScreeningStatus.interview
+        screening.interviews = Interviews(screening_id=screening.screening_id)
         return screening
 
     def add_next_interview(
