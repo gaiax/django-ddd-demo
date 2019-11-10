@@ -1,0 +1,10 @@
+<h1>screenings.html</h1>
+{% for screening in screenings %}
+<h2>応募者: {{ screening.applicant_email_address }}</h2>
+<p>応募日: {{ screening.apply_date }}</p>
+<p>ステータス: {{ screening.status }}</p>
+<p>次回面談/面接日: {{ screening.interviews.get_latest_interview.interview_date }}</p>
+<p>前回の面談/面接結果: {{ screening.interviews.get_latest_interview.screening_step_result }}</p>
+{% endfor %}
+
+<a href="{% url 'recruitment:apply_screening' %}">採用選考の追加</a>
