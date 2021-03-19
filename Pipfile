@@ -8,7 +8,7 @@ black = "==19.10b0"
 flake8 = "==3.7.9"
 
 [packages]
-django = "==2.2.13"
+django = "==2.2.18"
 django-stubs = "==1.2.0"
 mypy = "==0.740"
 
